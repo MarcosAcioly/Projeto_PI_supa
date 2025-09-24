@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Skeleton from "@/components/Skeleton";
 
@@ -112,10 +113,11 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+        <FavoritesProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
             <Suspense fallback={<Skeleton height="200px" />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -154,6 +156,7 @@ const App = () => {
             </Suspense>
           </BrowserRouter>
         </TooltipProvider>
+        </FavoritesProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

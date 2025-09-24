@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Header from "@/components/Header";
+import FavoriteButton from "@/components/FavoriteButton";
 import { useParams, Link } from "react-router-dom";
-import { Star, Clock, MapPin, Shield, MessageCircle, Heart, Share2 } from "lucide-react";
+import { Star, Clock, MapPin, Shield, MessageCircle, Share2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -85,7 +86,6 @@ const reviews = [
 const ServiceDetail = () => {
   const { id } = useParams();
   const [currentImage, setCurrentImage] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleOrder = () => {
     toast.success("Pedido iniciado! Você será redirecionado para o pagamento.");
@@ -93,11 +93,6 @@ const ServiceDetail = () => {
 
   const handleContact = () => {
     toast.success("Mensagem enviada para Ana Silva!");
-  };
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    toast.success(isFavorite ? "Removido dos favoritos" : "Adicionado aos favoritos");
   };
 
   return (
@@ -153,14 +148,11 @@ const ServiceDetail = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button
-                      size="sm"
+                    <FavoriteButton 
+                      serviceId={service.id} 
+                      size="sm" 
                       variant="outline"
-                      onClick={toggleFavorite}
-                      className={isFavorite ? "text-red-500" : ""}
-                    >
-                      <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} />
-                    </Button>
+                    />
                     <Button size="sm" variant="outline">
                       <Share2 className="h-4 w-4" />
                     </Button>

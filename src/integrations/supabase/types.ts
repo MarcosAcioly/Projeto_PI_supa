@@ -127,6 +127,42 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          id: string
+          user_id: string
+          service_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          service_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          service_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "favorites_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

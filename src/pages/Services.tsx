@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
+import FavoriteButton from "@/components/FavoriteButton";
 import { Search, Star, MapPin, Clock, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -152,39 +153,47 @@ const Services = () => {
     return matchesCategory && matchesSearch;
   });
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Encontre o Serviço Perfeito
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <div className="relative">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
+              Encontre o Serviço Perfeito
+            </h1>
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur opacity-30"></div>
+          </div>
+          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
             Conecte-se com profissionais qualificados e transforme suas ideias em realidade
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <div className="max-w-3xl mx-auto mb-12">
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-primary transition-colors" />
               <Input
-                placeholder="Pesquisar serviços..."
-                className="pl-10 h-12 text-lg shadow-elegant"
+                placeholder="Pesquisar serviços, categorias, prestadores..."
+                className="pl-12 h-14 text-lg shadow-2xl border-2 border-transparent focus:border-primary/50 transition-all duration-300 bg-white/80 backdrop-blur-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg -z-10 blur-sm"></div>
             </div>
           </div>
 
           {/* Categories */}
-          <div className="flex flex-wrap gap-2 justify-center mb-8">
+          <div className="flex flex-wrap gap-3 justify-center mb-12">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
-                className={selectedCategory === category ? "gradient-primary shadow-glow" : ""}
+                className={`transition-all duration-300 ${
+                  selectedCategory === category 
+                    ? "gradient-primary shadow-glow scale-105" 
+                    : "hover:shadow-lg hover:scale-105 bg-white/80 backdrop-blur-sm"
+                }`}
                 onClick={() => setSelectedCategory(category)}
               >
                 {category}
@@ -194,10 +203,10 @@ const Services = () => {
         </div>
 
         {/* Create Service Button */}
-        <div className="flex justify-end mb-8">
+        <div className="flex justify-end mb-12">
           <Link to="/services/new">
-            <Button className="gradient-accent shadow-glow">
-              <Plus className="mr-2 h-4 w-4" />
+            <Button className="gradient-accent shadow-glow hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+              <Plus className="mr-2 h-4 w-4 group-hover:rotate-90 transition-transform duration-300" />
               Criar Serviço
             </Button>
           </Link>
@@ -205,26 +214,53 @@ const Services = () => {
 
         {/* Services Grid */}
         {loading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Carregando serviços...</p>
+          <div className="text-center py-20">
+            <div className="relative">
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary mx-auto"></div>
+              <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-4 border-primary/30 mx-auto"></div>
+            </div>
+            <p className="mt-6 text-lg text-muted-foreground">Carregando serviços incríveis...</p>
           </div>
         ) : filteredServices.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Nenhum serviço encontrado.</p>
+          <div className="text-center py-20">
+            <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full flex items-center justify-center">
+              <Search className="h-16 w-16 text-primary/50" />
+            </div>
+            <h3 className="text-2xl font-semibold mb-4">Nenhum serviço encontrado</h3>
+            <p className="text-muted-foreground text-lg mb-8 max-w-md mx-auto">
+              Tente ajustar sua pesquisa ou explorar outras categorias
+            </p>
+            <Button 
+              onClick={() => {setSearchTerm(""); setSelectedCategory("Todos");}}
+              className="gradient-primary shadow-glow"
+            >
+              Limpar Filtros
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredServices.map((service) => (
-            <Link key={service.id} to={`/services/${service.id}`}>
-              <Card className="group hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 shadow-card">
-                <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 rounded-t-lg overflow-hidden">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            {filteredServices.map((service, index) => (
+              <Card key={service.id} className="group hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 shadow-card relative animate-fade-in" style={{animationDelay: `${index * 0.1}s`}}>
+                <Link to={`/services/${service.id}`} className="block">
+                  <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 rounded-t-lg overflow-hidden">
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </Link>
+                
+                {/* Favorite Button */}
+                <div className="absolute top-3 right-3 z-10">
+                  <FavoriteButton 
+                    serviceId={service.id} 
+                    size="sm" 
+                    variant="outline"
+                    className="bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg"
                   />
                 </div>
+
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="secondary">{service.category}</Badge>
@@ -233,9 +269,11 @@ const Services = () => {
                       {service.rating} ({service.reviews})
                     </div>
                   </div>
-                  <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                    {service.title}
-                  </CardTitle>
+                  <Link to={`/services/${service.id}`}>
+                    <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
+                      {service.title}
+                    </CardTitle>
+                  </Link>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <CardDescription className="line-clamp-2 mb-4">
@@ -257,26 +295,28 @@ const Services = () => {
                     <span className="text-lg font-bold text-primary">
                       R$ {service.price.toLocaleString()}
                     </span>
-                    <Button size="sm" className="gradient-primary">
-                      Ver Detalhes
-                    </Button>
+                    <Link to={`/services/${service.id}`}>
+                      <Button size="sm" className="gradient-primary">
+                        Ver Detalhes
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
-            </Link>
             ))}
           </div>
         )}
 
         {/* Load More */}
         {hasMore && !loading && (
-          <div className="text-center mt-12">
+          <div className="text-center mt-16">
             <Button 
               variant="outline" 
               size="lg" 
-              className="hover:shadow-elegant"
+              className="hover:shadow-elegant hover:scale-105 transition-all duration-300 bg-white/80 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/50"
               onClick={loadMoreServices}
             >
+              <Plus className="mr-2 h-5 w-5" />
               Carregar Mais Serviços
             </Button>
           </div>
